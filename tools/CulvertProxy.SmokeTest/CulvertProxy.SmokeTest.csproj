@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net11.0-windows10.0.26100.0</TargetFramework>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nexsteaduser.CulvertProxy.Core\Nexsteaduser.CulvertProxy.Core.csproj" />
+    <None
+      Include="..\..\native\bin\x64\CulvertHook.dll"
+      Link="CulvertHook.dll"
+      CopyToOutputDirectory="PreserveNewest"
+      Condition="Exists('..\..\native\bin\x64\CulvertHook.dll')" />
+    <None
+      Include="..\..\native\bin\x64\probe.exe"
+      Link="probe.exe"
+      CopyToOutputDirectory="PreserveNewest"
+      Condition="Exists('..\..\native\bin\x64\probe.exe')" />
+  </ItemGroup>
+</Project>

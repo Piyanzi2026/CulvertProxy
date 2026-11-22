@@ -1,0 +1,78 @@
+<Window
+    x:Class="Nexsteaduser.CulvertProxy.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppTitleBar" Padding="16,0,150,0" Background="Transparent">
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <Border Width="26" Height="26" CornerRadius="8" Background="{ThemeResource AccentBrush}">
+                    <FontIcon Glyph="&#xE7F0;" FontSize="14" Foreground="{ThemeResource AccentOnBrush}" />
+                </Border>
+                <TextBlock Text="CulvertProxy" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" />
+                <TextBlock Text="Nexsteaduser" FontSize="12" Foreground="{ThemeResource SubtleTextBrush}" VerticalAlignment="Center" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Ellipse x:Name="StatusDot" Width="8" Height="8" Fill="{ThemeResource BadBrush}" />
+                <TextBlock x:Name="StatusLabel" Text="已停止" FontSize="12" Foreground="{ThemeResource SubtleTextBrush}" />
+            </StackPanel>
+        </Grid>
+
+        <NavigationView
+            Grid.Row="1"
+            x:Name="Nav"
+            PaneDisplayMode="Left"
+            PaneTitle="CulvertProxy"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            OpenPaneLength="216"
+            CompactPaneLength="52"
+            SelectionChanged="Nav_SelectionChanged"
+            Background="Transparent">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="仪表盘" Tag="dashboard">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE80F;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="代理服务器" Tag="proxies">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE774;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="路由规则" Tag="rules">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE71C;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="连接" Tag="connections">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8F1;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="日志" Tag="logs">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE9D9;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="设置" Tag="settings">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+            <NavigationView.PaneFooter>
+                <StackPanel Padding="14,8,14,14" Spacing="2">
+                    <TextBlock Text="本地入口" Style="{StaticResource Subtle}" />
+                    <TextBlock x:Name="PaneEndpoint" Text="—" Style="{StaticResource Mono}" />
+                    <TextBlock Text="SOCKS5 · HTTP" Style="{StaticResource Subtle}" />
+                </StackPanel>
+            </NavigationView.PaneFooter>
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
+    </Grid>
+</Window>

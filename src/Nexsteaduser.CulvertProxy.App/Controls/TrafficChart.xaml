@@ -1,0 +1,27 @@
+<UserControl
+    x:Class="Nexsteaduser.CulvertProxy.App.Controls.TrafficChart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Name="Root" MinHeight="150" SizeChanged="Root_SizeChanged">
+        <Canvas x:Name="Plot" IsHitTestVisible="False" />
+        <TextBlock
+            x:Name="MaxLabel"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Style="{StaticResource Subtle}" />
+        <StackPanel
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Orientation="Horizontal"
+            Spacing="16">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Rectangle Width="12" Height="3" VerticalAlignment="Center" Fill="{ThemeResource UpBrush}" />
+                <TextBlock Text="上行" Style="{StaticResource Subtle}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Rectangle Width="12" Height="3" VerticalAlignment="Center" Fill="{ThemeResource DownBrush}" />
+                <TextBlock Text="下行" Style="{StaticResource Subtle}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

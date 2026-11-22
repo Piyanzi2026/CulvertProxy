@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net11.0-windows10.0.26100.0</TargetFramework>
+    <RootNamespace>Nexsteaduser.CulvertProxy.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Nexsteaduser.CulvertProxy.Core\Nexsteaduser.CulvertProxy.Core.csproj" />
+    <None
+      Include="..\..\native\bin\x64\CulvertHook.dll"
+      Link="CulvertHook.dll"
+      CopyToOutputDirectory="PreserveNewest"
+      Condition="Exists('..\..\native\bin\x64\CulvertHook.dll')" />
+  </ItemGroup>
+</Project>

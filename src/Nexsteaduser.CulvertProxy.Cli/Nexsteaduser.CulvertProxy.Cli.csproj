@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net11.0-windows10.0.26100.0</TargetFramework>
+    <RootNamespace>Nexsteaduser.CulvertProxy.Cli</RootNamespace>
+    <AssemblyName>culvert</AssemblyName>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nexsteaduser.CulvertProxy.Core\Nexsteaduser.CulvertProxy.Core.csproj" />
+    <None
+      Include="..\..\native\bin\x64\CulvertHook.dll"
+      Link="CulvertHook.dll"
+      CopyToOutputDirectory="PreserveNewest"
+      CopyToPublishDirectory="PreserveNewest"
+      Condition="Exists('..\..\native\bin\x64\CulvertHook.dll')" />
+  </ItemGroup>
+</Project>

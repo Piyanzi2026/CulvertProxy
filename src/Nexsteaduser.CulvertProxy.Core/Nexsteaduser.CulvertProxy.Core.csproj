@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net11.0-windows10.0.26100.0</TargetFramework>
+    <RootNamespace>Nexsteaduser.CulvertProxy.Core</RootNamespace>
+    <AssemblyName>Nexsteaduser.CulvertProxy.Core</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsAotCompatible>false</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Nexsteaduser.CulvertProxy.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,59 @@
+<ContentDialog
+    x:Class="Nexsteaduser.CulvertProxy.App.Dialogs.RuleDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="路由规则"
+    PrimaryButtonText="保存"
+    CloseButtonText="取消"
+    DefaultButton="Primary"
+    MinWidth="540">
+    <ScrollViewer MaxHeight="600">
+        <StackPanel Spacing="10">
+            <TextBox x:Name="NameBox" Header="规则名称" PlaceholderText="Chrome 走代理" />
+            <Grid ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.2*" />
+                    <ColumnDefinition Width="1.8*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="ActionBox" Header="动作" HorizontalAlignment="Stretch" SelectionChanged="ActionBox_SelectionChanged" />
+                <ComboBox
+                    Grid.Column="1"
+                    x:Name="PolicyBox"
+                    Header="策略"
+                    HorizontalAlignment="Stretch"
+                    DisplayMemberPath="Name" />
+            </Grid>
+            <TextBlock Text="规则按列表顺序匹配，命中第一条即生效。留空的条件表示不限制。" Style="{StaticResource Subtle}" />
+            <TextBox
+                x:Name="ProcessesBox"
+                Header="进程（每行一个，支持 chrome.exe、C:\Apps\*\tool.exe）"
+                AcceptsReturn="True"
+                Height="62"
+                FontFamily="Consolas" />
+            <TextBox
+                x:Name="HostsBox"
+                Header="域名（每行一个，支持 *.example.com、.example.com、*google*、re: 正则）"
+                AcceptsReturn="True"
+                Height="62"
+                FontFamily="Consolas" />
+            <TextBox
+                x:Name="IpsBox"
+                Header="IP 段（每行一个 CIDR，如 10.0.0.0/8）"
+                AcceptsReturn="True"
+                Height="52"
+                FontFamily="Consolas" />
+            <TextBox
+                x:Name="PortsBox"
+                Header="端口（逗号或换行分隔，如 80,443,8000-9000）"
+                AcceptsReturn="True"
+                Height="52"
+                FontFamily="Consolas" />
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock Text="传输层" VerticalAlignment="Center" Style="{StaticResource Subtle}" />
+                <CheckBox x:Name="TcpBox" Content="TCP" IsChecked="True" />
+                <CheckBox x:Name="UdpBox" Content="UDP" />
+            </StackPanel>
+            <TextBlock x:Name="ErrorText" Foreground="{ThemeResource BadBrush}" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</ContentDialog>
