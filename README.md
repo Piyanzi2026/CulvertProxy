@@ -1,6 +1,7 @@
 # CulvertProxy
 
 [![Build](https://img.shields.io/github/actions/workflow/status/Tinmc189623/CulvertProxy/build.yml?style=flat-square&branch=main)](https://github.com/Tinmc189623/CulvertProxy/actions)
+[![Site](https://img.shields.io/badge/site-tinmc189623.github.io-e6a23c?style=flat-square)](https://tinmc189623.github.io/CulvertProxy/)
 [![Release](https://img.shields.io/github/v/release/Tinmc189623/CulvertProxy?style=flat-square)](https://github.com/Tinmc189623/CulvertProxy/releases/latest)
 [![License](https://img.shields.io/github/license/Tinmc189623/CulvertProxy?style=flat-square)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-11-512BD4?style=flat-square)](https://dotnet.microsoft.com/)

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tinmc189623.github.io/CulvertProxy/sitemap.xml
