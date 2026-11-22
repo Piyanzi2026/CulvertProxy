@@ -3,6 +3,8 @@ using System.Net;
 using Nexsteaduser.CulvertProxy.Core.Configuration;
 using Nexsteaduser.CulvertProxy.Core.Dns;
 using Nexsteaduser.CulvertProxy.Core.Diagnostics;
+using Nexsteaduser.CulvertProxy.Core.Net;
+using Nexsteaduser.CulvertProxy.Core.Protocols;
 using Nexsteaduser.CulvertProxy.Core.Routing;
 using Nexsteaduser.CulvertProxy.Core.Server;
 using Xunit;
@@ -141,6 +143,26 @@ public sealed class DnsWireTests
     }
 
     [Fact]
+    public void Build_Response_Supports_Aaaa_Addresses()
+    {
+        var query = DnsWire.BuildQuery("example.com", DnsWire.TypeAaaa, 0x4321);
+        Assert.True(DnsWire.TryParseQuery(query, out _, out _, out _, out var questionEnd));
+        // 混合传入 A 与 AAAA 地址，qtype 为 AAAA 时只应保留 AAAA 地址。
+        var response = DnsWire.BuildResponse(
+            query,
+            questionEnd,
+            [IPAddress.Parse("1.2.3.4"), IPAddress.Parse("2001:db8::1"), IPAddress.Parse("2001:db8::2")],
+            60,
+            DnsWire.TypeAaaa);
+        var parsed = DnsWire.ParseAnswer(response);
+        Assert.True(parsed.IsSuccess);
+        Assert.Equal(2, parsed.Addresses.Count);
+        Assert.Contains(IPAddress.Parse("2001:db8::1"), parsed.Addresses);
+        Assert.Contains(IPAddress.Parse("2001:db8::2"), parsed.Addresses);
+        Assert.Equal(60, parsed.TtlSeconds);
+    }
+
+    [Fact]
     public void Nxdomain_Is_Reported()
     {
         var query = DnsWire.BuildQuery("missing.test", DnsWire.TypeA, 9);
@@ -177,9 +199,71 @@ public sealed class FakeIpPoolTests
     }
 
     [Fact]
+    public void Slash30_Allocates_Both_Addresses()
+    {
+        var pool = new FakeIpPool("198.18.0.0/30");
+        var first = pool.GetOrAdd("a.example.com");
+        var second = pool.GetOrAdd("b.example.com");
+        Assert.Equal(IPAddress.Parse("198.18.0.1"), first);
+        Assert.Equal(IPAddress.Parse("198.18.0.2"), second);
+        Assert.True(pool.TryGetHost(first, out var firstHost));
+        Assert.Equal("a.example.com", firstHost);
+        Assert.True(pool.TryGetHost(second, out var secondHost));
+        Assert.Equal("b.example.com", secondHost);
+    }
+
+    [Fact]
+    public void Exhaustion_Evicts_Only_The_Oldest_Entry()
+    {
+        var pool = new FakeIpPool("198.18.0.0/30");
+        var first = pool.GetOrAdd("a.example.com");
+        var second = pool.GetOrAdd("b.example.com");
+        var third = pool.GetOrAdd("c.example.com");
+        Assert.Equal(2, pool.Count);
+        // 只淘汰最旧的 a.example.com，复用它的地址；b 的映射必须保留。
+        // 注意 first 这个地址已被 c 复用，反查应返回 c，而不是 a。
+        Assert.Equal(first, third);
+        Assert.True(pool.TryGetHost(first, out var reusedHost));
+        Assert.Equal("c.example.com", reusedHost);
+        Assert.True(pool.TryGetHost(second, out var secondHost));
+        Assert.Equal("b.example.com", secondHost);
+        // a 已被淘汰，再次分配会淘汰当时最旧的 b 并复用它的地址。
+        var again = pool.GetOrAdd("a.example.com");
+        Assert.Equal(second, again);
+        Assert.True(pool.TryGetHost(again, out var againHost));
+        Assert.Equal("a.example.com", againHost);
+    }
+
+    [Fact]
     public void Hook_Reserved_Range_Is_Rejected()
     {
         Assert.Throws<FormatException>(() => new FakeIpPool("198.19.0.0/16"));
+    }
+}
+
+public sealed class Socks5UdpCodecTests
+{
+    [Theory]
+    [InlineData(254)]
+    [InlineData(255)]
+    public void WriteHeader_Supports_Long_Domain_Names(int hostLength)
+    {
+        var host = new string('a', hostLength - 4) + ".com";
+        Assert.Equal(hostLength, host.Length);
+
+        var header = new byte[Socks5UdpCodec.MaxHeaderLength];
+        var length = Socks5UdpCodec.WriteHeader(new ProxyTarget(host, 53), header);
+        Assert.Equal(3 + 4 + hostLength, length);
+        Assert.True(Socks5UdpCodec.TryParseHeader(header.AsSpan(0, length), out var parsed, out var payloadOffset));
+        Assert.Equal(host, parsed.Host);
+        Assert.Equal(53, parsed.Port);
+        Assert.Equal(length, payloadOffset);
+    }
+
+    [Fact]
+    public void MaxHeaderLength_Fits_Longest_Domain_Header()
+    {
+        Assert.Equal(262, Socks5UdpCodec.MaxHeaderLength);
     }
 }
 
