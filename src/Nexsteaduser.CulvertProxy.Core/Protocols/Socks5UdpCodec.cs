@@ -7,6 +7,9 @@ namespace Nexsteaduser.CulvertProxy.Core.Protocols;
 /// <summary>SOCKS5 UDP 封装头（RSV/FRAG + 地址 + 端口）的编解码。</summary>
 public static class Socks5UdpCodec
 {
+    /// <summary>UDP 头最大长度：RSV/FRAG 3 字节 + 域名地址字段最大 259 字节（类型 1 + 长度 1 + 域名 255 + 端口 2）。</summary>
+    public const int MaxHeaderLength = 3 + 4 + 255;
+
     /// <summary>写 UDP 头，返回头长度。</summary>
     public static int WriteHeader(ProxyTarget target, Span<byte> destination)
     {
