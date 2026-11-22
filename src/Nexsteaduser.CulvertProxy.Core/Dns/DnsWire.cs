@@ -158,7 +158,15 @@ public static class DnsWire
         }
 
         var flags = (ushort)(0x8000 | (queryFlags & 0x7900) | 0x0080 | (rcode & 0x0F));
-        var size = 12 + (questionEnd - 12) + (answers.Count * 16);
+        // 每条应答记录是 12 字节固定头 + RDATA（A 为 4 字节，AAAA 为 16 字节），
+        // 不能按固定 16 字节算，否则 AAAA 应答写出界。
+        var answerBytes = 0;
+        foreach (var address in answers)
+        {
+            answerBytes += 12 + address.GetAddressBytes().Length;
+        }
+
+        var size = 12 + (questionEnd - 12) + answerBytes;
         var packet = new byte[size];
         BinaryPrimitives.WriteUInt16BigEndian(packet.AsSpan(0), BinaryPrimitives.ReadUInt16BigEndian(query));
         BinaryPrimitives.WriteUInt16BigEndian(packet.AsSpan(2), flags);
