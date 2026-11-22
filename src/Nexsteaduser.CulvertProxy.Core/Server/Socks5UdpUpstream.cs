@@ -99,7 +99,7 @@ internal sealed class Socks5UdpUpstream : IAsyncDisposable
             throw new IOException("UDP 上游控制连接已关闭。");
         }
 
-        var header = new byte[3 + 1 + 255 + 2];
+        var header = new byte[Socks5UdpCodec.MaxHeaderLength];
         var headerLength = Socks5UdpCodec.WriteHeader(target, header);
         var total = headerLength + payload.Length;
         if (total > 65507)

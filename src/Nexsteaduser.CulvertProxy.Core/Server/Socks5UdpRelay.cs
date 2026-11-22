@@ -450,7 +450,7 @@ internal sealed class Socks5UdpRelay : IAsyncDisposable
             return;
         }
 
-        var header = new byte[3 + 1 + 255 + 2];
+        var header = new byte[Socks5UdpCodec.MaxHeaderLength];
         var headerLength = Socks5UdpCodec.WriteHeader(source, header);
         var total = headerLength + payload.Length;
         if (total > 65507)

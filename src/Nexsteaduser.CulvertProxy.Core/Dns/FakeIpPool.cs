@@ -95,7 +95,7 @@ public sealed class FakeIpPool
     {
         for (var attempt = 0; attempt < _capacity; attempt++)
         {
-            var offset = (uint)((Interlocked.Increment(ref _next) - 1) % (_capacity - 1)) + 1;
+            var offset = (uint)((Interlocked.Increment(ref _next) - 1) % _capacity) + 1;
             var address = FromUInt(_base + offset);
             var bytes = address.GetAddressBytes();
             if (bytes[0] == 198 && bytes[1] == 19)
@@ -110,9 +110,19 @@ public sealed class FakeIpPool
             }
         }
 
-        // 容量耗尽时整体回收，旧连接会自然失效。
-        Clear();
-        return AllocateAddress();
+        // 容量耗尽：只淘汰最旧的一条，与 Trim() 保持一致，
+        // 而不是清空全部 live 映射（旧连接的反查会因此出错）。
+        while (_allocationOrder.TryDequeue(out var oldest))
+        {
+            if (_byAddress.TryGetValue(oldest.Address, out var mapped) && mapped == oldest.Host)
+            {
+                _byAddress.TryRemove(oldest.Address, out _);
+                _byHost.TryRemove(oldest.Host, out _);
+                return oldest.Address;
+            }
+        }
+
+        throw new InvalidOperationException("fake-IP 容量已耗尽。");
     }
 
     private void Trim()

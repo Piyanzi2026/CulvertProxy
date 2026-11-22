@@ -337,7 +337,7 @@ internal sealed class TestSocks5Server : IAsyncDisposable
                     }
                     else if (clientEndpoint is not null)
                     {
-                        var header = new byte[3 + 1 + 255 + 2];
+                        var header = new byte[Socks5UdpCodec.MaxHeaderLength];
                         var headerLength = Socks5UdpCodec.WriteHeader(new ProxyTarget(remote.Address.ToString(), remote.Port), header);
                         var datagram = new byte[headerLength + result.ReceivedBytes];
                         header.AsSpan(0, headerLength).CopyTo(datagram);
